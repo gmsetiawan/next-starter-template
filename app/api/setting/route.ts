@@ -12,7 +12,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { name } = UserSettingValidator.parse(body);
+    const { name, bio } = UserSettingValidator.parse(body);
 
     // check if username is taken
     const username = await prisma.user.findFirst({
@@ -32,6 +32,7 @@ export async function PATCH(req: Request) {
       },
       data: {
         username: name,
+        bio: bio,
       },
     });
 

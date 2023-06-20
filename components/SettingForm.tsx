@@ -22,9 +22,10 @@ import {
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
 
 interface UserSettingFormProps extends React.HTMLAttributes<HTMLFormElement> {
-  user: Pick<User, "id" | "username">;
+  user: Pick<User, "id" | "username" | "bio">;
 }
 
 type FormData = z.infer<typeof UserSettingValidator>;
@@ -43,12 +44,13 @@ export function SettingForm({
     resolver: zodResolver(UserSettingValidator),
     defaultValues: {
       name: user?.username || "",
+      bio: user?.bio || "",
     },
   });
 
   const { mutate: updateSetting, isLoading } = useMutation({
-    mutationFn: async ({ name }: FormData) => {
-      const payload: FormData = { name };
+    mutationFn: async ({ name, bio }: FormData) => {
+      const payload: FormData = { name, bio };
 
       const { data } = await axios.patch(`/api/setting/`, payload);
       return data;
@@ -86,28 +88,26 @@ export function SettingForm({
     >
       <Card>
         <CardHeader>
-          <CardTitle>Settings</CardTitle>
+          <CardTitle>Profile</CardTitle>
           <CardDescription>
-            Please enter a display name you are confortable with.
+            Think of the summary as a snapshot of your skills, accomplishments,
+            and knowledge and Please enter a display name you are confortable.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="relative grid gap-1">
-            <div className="absolute top-0 left-0 w-8 h-10 grid place-items-center">
-              <span className="text-sm text-zinc-400">u/</span>
+          <div className="grid grid-cols-1 gap-4">
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="username">Username</Label>
+              <Input type="text" id="name" size={32} {...register("name")} />
             </div>
-            <Label className="sr-only" htmlFor="name">
-              Name
-            </Label>
-            <Input
-              id="name"
-              className="w-[400px] pl-6"
-              size={32}
-              {...register("name")}
-            />
-            {errors?.name && (
-              <p className="px-1 text-xs text-red-600">{errors.name.message}</p>
-            )}
+            <div className="grid w-full gap-1.5">
+              <Label htmlFor="bio">Bio</Label>
+              <Textarea
+                id="bio"
+                placeholder="Type your bio here."
+                {...register("bio")}
+              />
+            </div>
           </div>
         </CardContent>
         <CardFooter>
