@@ -8,6 +8,7 @@ import {
   Laptop,
   HelpCircle,
   KeyRound,
+  Loader2,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -27,6 +28,7 @@ export const Icons = {
     </svg>
   ),
   close: X,
+  spinner: Loader2,
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,

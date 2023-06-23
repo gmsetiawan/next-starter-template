@@ -21,11 +21,10 @@ export async function PATCH(req: Request) {
       },
     });
 
-    if (username) {
+    if (username && username.id !== session.user.id) {
       return new Response("Username is taken", { status: 409 });
     }
 
-    // update setting
     await prisma.user.update({
       where: {
         id: session.user.id,
@@ -45,7 +44,7 @@ export async function PATCH(req: Request) {
     }
 
     return new Response(
-      "Could not update username at this time. Please try later",
+      "Could not update profile at this time. Please try later",
       { status: 500 }
     );
   }

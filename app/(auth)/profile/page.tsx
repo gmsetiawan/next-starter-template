@@ -15,6 +15,7 @@ const Profile = async () => {
       <div className="">
         <h1>{session?.user.name}</h1>
         <h1>{session?.user.email}</h1>
+        <h1>{session?.user.bio}</h1>
       </div>
     </div>
   );

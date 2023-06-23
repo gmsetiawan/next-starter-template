@@ -68,13 +68,13 @@ export function SettingForm({
 
       return toast({
         title: "Something went wrong.",
-        description: "Your username was not updated. Please try again.",
+        description: "Your profile was not updated. Please try again.",
         variant: "destructive",
       });
     },
     onSuccess: () => {
       toast({
-        description: "Your username has been updated.",
+        description: "Your profile has been updated.",
       });
       router.refresh();
     },
