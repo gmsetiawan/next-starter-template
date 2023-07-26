@@ -6,8 +6,10 @@ import { Icons } from "./Icons";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/configs/site";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-export default function MainNav() {
+export default async function MainNav() {
   const pathname = usePathname();
   return (
     <div className="mr-4 hidden md:flex">
@@ -18,6 +20,17 @@ export default function MainNav() {
         </span>
       </Link>
       <nav className="flex items-center space-x-6 text-sm font-medium">
+        <Link
+          href="/dashboard"
+          className={cn(
+            "transition-colors hover:text-foreground/80",
+            pathname?.startsWith("/examples")
+              ? "text-foreground"
+              : "text-foreground/60"
+          )}
+        >
+          Dashboard
+        </Link>
         <Link
           href="/docs"
           className={cn(

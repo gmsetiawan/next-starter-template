@@ -1,11 +1,10 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import GoogleProvider from "next-auth/providers/google";
+import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { nanoid } from "nanoid";
 import { prisma } from "./db";
 import { NextAuthOptions, getServerSession } from "next-auth";
 import bcrypt from "bcrypt";
-import { redirect } from "next/dist/server/api-utils";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -52,14 +51,29 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
+          user,
           id: user.id,
           name: user.name,
           email: user.email,
+          role: user.role,
         };
       },
     }),
   ],
   callbacks: {
+    async session({ token, session }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.username = token.username;
+        session.user.email = token.email;
+        session.user.image = token.picture;
+        session.user.bio = token.bio;
+        session.user.role = token.role;
+      }
+      return session;
+    },
+
     async jwt({ token, account, user }) {
       if (account) {
         token.accessToken = account.access_token;
@@ -93,17 +107,6 @@ export const authOptions: NextAuthOptions = {
       return { ...token, ...user };
     },
 
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.username = token.username;
-        session.user.email = token.email;
-        session.user.image = token.picture;
-        session.user.bio = token.bio;
-      }
-      return session;
-    },
     redirect() {
       return "/";
     },
